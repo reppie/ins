@@ -19,6 +19,6 @@ public class Quaternion {
         this.x = q.x;
         this.y = q.y;
         this.z = q.z;
-        this.w = q.z;
+        this.w = q.w;
     }
 }
