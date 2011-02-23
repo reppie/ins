@@ -65,8 +65,9 @@ public class SunSpotApplication extends MIDlet {
                     acceleration.set(0);
 
                 // calc
-                distance += (velocity * deltaTime) + (0.5 * acceleration.x * (deltaTime * deltaTime));
-                velocity += acceleration.x * deltaTime;
+                double dtSeconds = deltaTime / 1000.0;
+                distance += (velocity * dtSeconds)+ (0.5 * acceleration.x * (dtSeconds * dtSeconds));
+                velocity += acceleration.x * dtSeconds;
 
                 // print
                 if (elapsedTime > 1000) { // magic number :D
