@@ -29,9 +29,31 @@ public class Vector3 {
         this.z = v.z;
     }
 
+    public void set(float f) {
+        this.x = f;
+        this.y = f;
+        this.z = f;
+    }
+
     public void divide(float f) {
         this.x /= f;
         this.y /= f;
         this.z /= f;
+    }
+
+    public boolean greaterThan(float f) {
+        if (this.x > f || this.y > f || this.z > f)
+            return true;
+        return false;
+    }
+
+    public boolean lessThan(float f) {
+        if (this.x < f || this.y < f || this.z < f)
+            return true;
+        return false;
+    }
+
+    public String toString() {
+        return "{x:" + this.x + ", y:" + this.y + ", z:" + this.z + "}";
     }
 }

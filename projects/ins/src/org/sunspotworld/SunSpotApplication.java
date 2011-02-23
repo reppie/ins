@@ -18,7 +18,7 @@ import org.sunspotworld.vectornav.VN100;
 /**
  * The startApp method of this class is called by the VM to start the
  * application.
- * 
+ *
  * The manifest specifies this class as MIDlet-1, which means it will
  * be selected for execution.
  */
@@ -32,7 +32,7 @@ public class SunSpotApplication extends MIDlet {
         long ourAddr = RadioFactory.getRadioPolicyManager().getIEEEAddress();
         System.out.println("Radio Address: " + IEEEAddress.toDottedHex(ourAddr));
 
-        // VectorNav
+        // vectornav
         vn = VN100.getInstance();
         try {
             System.out.println();
@@ -42,7 +42,6 @@ public class SunSpotApplication extends MIDlet {
             System.out.println("Firmware Version: " + vn.getFirmwareVersion());
             System.out.println("Baud Rate: " + vn.getBaudRate());
 
-
             boolean running = true;
 
             long previousTime = System.currentTimeMillis();
@@ -50,32 +49,36 @@ public class SunSpotApplication extends MIDlet {
             long deltaTime = 0;
             long elapsedTime = 0;
 
-            float position = 0;
-            float velocity = 0;
+            double distance = 0;
+            double velocity = 0;
 
             while (running) {
+                // init
                 currentTime = System.currentTimeMillis();
                 deltaTime = currentTime - previousTime;
                 elapsedTime += deltaTime;
-                previousTime = currentTime;
+                // get acceleration from vectornav
+                Vector3 acceleration = new Vector3(vn.getAcceleration());
 
-                Vector3 accel = new Vector3(vn.getAcceleration());
+                // hack
+                if (acceleration.lessThan(1) && acceleration.greaterThan(-1))
+                    acceleration.set(0);
 
-                if (accel.x < 1 && accel.x > -1)
-                    accel.x = 0;
+                // calc
+                distance += (velocity * deltaTime) + (0.5 * acceleration.x * (deltaTime * deltaTime));
+                velocity += acceleration.x * deltaTime;
 
-                accel.divide(1000000);
-
-                position += (velocity * deltaTime) + (0.5 * accel.x * (deltaTime * deltaTime));
-                velocity += accel.x * deltaTime;
-
-                if (elapsedTime > 1000) {
+                // print
+                if (elapsedTime > 1000) { // magic number :D
                     System.out.println();
-                    System.out.println("Accel (x): " + (accel.x * 1000000));
-                    System.out.println("Position: " + position);
-                    System.out.println("Velocity: " + (velocity * 1000));
+                    System.out.println("Acceleration: " + acceleration.toString());
+                    System.out.println("Distance: " + distance);
+                    System.out.println("Velocity: " + velocity);
                     elapsedTime = 0;
                 }
+
+                // reset time
+                previousTime = currentTime;
             }
         } catch (Exception e) {
             e.printStackTrace();
