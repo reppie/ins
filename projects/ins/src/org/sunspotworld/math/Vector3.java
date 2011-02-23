@@ -7,9 +7,9 @@ public class Vector3 {
     public static Vector3 UNIT_Y = new Vector3(0, 1, 0);
     public static Vector3 UNIT_Z = new Vector3(0, 0, 1);
 
-    private float x;
-    private float y;
-    private float z;
+    public float x;
+    public float y;
+    public float z;
 
     public Vector3(float x, float y, float z) {
         this.x = x;
@@ -17,9 +17,21 @@ public class Vector3 {
         this.z = z;
     }
 
+    public Vector3(float[] a) {
+        this.x = a[0];
+        this.y = a[1];
+        this.z = a[2];
+    }
+
     public Vector3(Vector3 v) {
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
+    }
+
+    public void divide(float f) {
+        this.x /= f;
+        this.y /= f;
+        this.z /= f;
     }
 }

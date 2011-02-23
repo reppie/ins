@@ -7,16 +7,13 @@
 package org.sunspotworld;
 
 import com.sun.spot.peripheral.radio.RadioFactory;
-import com.sun.spot.resources.Resources;
-import com.sun.spot.resources.transducers.ISwitch;
-import com.sun.spot.resources.transducers.ITriColorLED;
-import com.sun.spot.resources.transducers.ITriColorLEDArray;
 import com.sun.spot.service.BootloaderListenerService;
 import com.sun.spot.util.IEEEAddress;
-import com.sun.spot.util.Utils;
 
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
+import org.sunspotworld.math.Vector3;
+import org.sunspotworld.vectornav.VN100;
 
 /**
  * The startApp method of this class is called by the VM to start the
@@ -27,25 +24,62 @@ import javax.microedition.midlet.MIDletStateChangeException;
  */
 public class SunSpotApplication extends MIDlet {
 
-    private ITriColorLEDArray leds = (ITriColorLEDArray) Resources.lookup(ITriColorLEDArray.class);
+    private VN100 vn;
 
     protected void startApp() throws MIDletStateChangeException {
-        System.out.println("Hello, world");
         BootloaderListenerService.getInstance().start();   // monitor the USB (if connected) and recognize commands from host
 
         long ourAddr = RadioFactory.getRadioPolicyManager().getIEEEAddress();
-        System.out.println("Our radio address = " + IEEEAddress.toDottedHex(ourAddr));
+        System.out.println("Radio Address: " + IEEEAddress.toDottedHex(ourAddr));
 
-        ISwitch sw1 = (ISwitch) Resources.lookup(ISwitch.class, "SW1");
-        ITriColorLED led = leds.getLED(0);
-        led.setRGB(100,0,0);                    // set color to moderate red
-        while (sw1.isOpen()) {                  // done when switch is pressed
-            led.setOn();                        // Blink LED
-            Utils.sleep(250);                   // wait 1/4 seconds
-            led.setOff();
-            Utils.sleep(1000);                  // wait 1 second
+        // VectorNav
+        vn = VN100.getInstance();
+        try {
+            System.out.println();
+            System.out.println("Model Number: " + vn.getModelNumber());
+            System.out.println("Serial Number: " + vn.getSerialNumber());
+            System.out.println("Hardware Revision: " + vn.getHardwareRevision());
+            System.out.println("Firmware Version: " + vn.getFirmwareVersion());
+            System.out.println("Baud Rate: " + vn.getBaudRate());
+
+
+            boolean running = true;
+
+            long previousTime = System.currentTimeMillis();
+            long currentTime = 0;
+            long deltaTime = 0;
+            long elapsedTime = 0;
+
+            float position = 0;
+            float velocity = 0;
+
+            while (running) {
+                currentTime = System.currentTimeMillis();
+                deltaTime = currentTime - previousTime;
+                elapsedTime += deltaTime;
+                previousTime = currentTime;
+
+                Vector3 accel = new Vector3(vn.getAcceleration());
+
+                if (accel.x < 1 && accel.x > -1)
+                    accel.x = 0;
+
+                accel.divide(1000000);
+
+                position += (velocity * deltaTime) + (0.5 * accel.x * (deltaTime * deltaTime));
+                velocity += accel.x * deltaTime;
+
+                if (elapsedTime > 1000) {
+                    System.out.println();
+                    System.out.println("Accel (x): " + (accel.x * 1000000));
+                    System.out.println("Position: " + position);
+                    System.out.println("Velocity: " + (velocity * 1000));
+                    elapsedTime = 0;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        notifyDestroyed();                      // cause the MIDlet to exit
     }
 
     protected void pauseApp() {
