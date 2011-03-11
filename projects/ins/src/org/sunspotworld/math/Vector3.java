@@ -54,6 +54,6 @@ public class Vector3 {
     }
 
     public String toString() {
-        return "{x:" + this.x + ", y:" + this.y + ", z:" + this.z + "}";
+        return this.x + ";" + this.y + ";" + this.z;
     }
 }

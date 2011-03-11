@@ -35,6 +35,8 @@ public class SunSpotApplication extends MIDlet {
         // vectornav
         vn = VN100.getInstance();
         try {
+            vn.setBaudRate(115200);
+
             System.out.println();
             System.out.println("Model Number: " + vn.getModelNumber());
             System.out.println("Serial Number: " + vn.getSerialNumber());
@@ -59,24 +61,14 @@ public class SunSpotApplication extends MIDlet {
                 elapsedTime += deltaTime;
                 // get acceleration from vectornav
                 Vector3 acceleration = new Vector3(vn.getAcceleration());
-
-                // hack
-                if (acceleration.lessThan(1) && acceleration.greaterThan(-1))
-                    acceleration.set(0);
+                float[] yawPitchRoll = vn.getYawPitchRoll();
 
                 // calc
                 double dtSeconds = deltaTime / 1000.0;
                 distance += (velocity * dtSeconds)+ (0.5 * acceleration.x * (dtSeconds * dtSeconds));
                 velocity += acceleration.x * dtSeconds;
 
-                // print
-                if (elapsedTime > 1000) { // magic number :D
-                    System.out.println();
-                    System.out.println("Acceleration: " + acceleration.toString());
-                    System.out.println("Distance: " + distance);
-                    System.out.println("Velocity: " + velocity);
-                    elapsedTime = 0;
-                }
+                System.out.print("<MEASUREMENT>" + acceleration.toString() + "</MEASUREMENT>");
 
                 // reset time
                 previousTime = currentTime;

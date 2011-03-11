@@ -428,9 +428,8 @@ public class VN100 extends ExternalBoard
         // 02050000 = write serial baud cmd
         // 8025000 = 9600 (litle endian)
         // 00C20100 = 115200 (little endian)
-        //byte[] command = {2,5,0,0,0,(byte)0xC2,(byte)0x01,0};
-        byte[] command = {2,5,0,0,
-                          (byte)0x80,(byte)0x25,0,0};
+        byte[] command = {2,5,0,0,0,(byte)0xC2,(byte)0x01,0};
+        //byte[] command = {2,5,0,0,(byte)0x80,(byte)0x25,0,0};
         byte[] result = sendCommand(command, 8);
 
         return Convert.byteArrayToInt(result, 4);
