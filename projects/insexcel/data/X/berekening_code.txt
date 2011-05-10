@@ -1,8 +1,0 @@
-previousAccel = currentAccel;
-currentAccel = excel.get........
-
-previousVelocity = currentVelocity;
-
-currentVelocity += 0.5 * (currentTime - previousTime) * (currentAccel+previousAccel);
-
-distance += 0.5 * (currentTime - previousTime) * (currentVelocity + previousVelocity);
