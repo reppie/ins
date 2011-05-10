@@ -2,5 +2,14 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="lib/ipv6lib_common.jar"/>
+	<classpathentry kind="lib" path="lib/multihop_common.jar"/>
+	<classpathentry kind="lib" path="lib/RXTXcomm.jar"/>
+	<classpathentry kind="lib" path="lib/signing_host.jar"/>
+	<classpathentry kind="lib" path="lib/spotclient_host.jar"/>
+	<classpathentry kind="lib" path="lib/spotlib_common.jar"/>
+	<classpathentry kind="lib" path="lib/spotlib_host.jar"/>
+	<classpathentry kind="lib" path="lib/squawk_common.jar"/>
+	<classpathentry kind="lib" path="lib/transducer_device.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
